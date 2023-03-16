@@ -1,0 +1,14 @@
+[package]
+name = "rust_space_invaders"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = "0.9.1"
+rand = "0.8.5"
+tracing = "0.1.37"
+
+# export RUST_LOG=rust_space_invaders=trace
+tracing-subscriber = "0.3.16"

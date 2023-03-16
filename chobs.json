@@ -1,0 +1,7 @@
+{
+  "verbose": true,
+  "ignore": ["target", ".git"],
+  "delay": 1000,
+  "root_folder": ".",
+  "exec": null
+}
