@@ -6,11 +6,12 @@ use bevy::prelude::*;
 pub fn aliens_shoot(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    audio: Res<Audio>,
     mut aliens: Query<(&mut Alien, &Transform), With<Alien>>,
     time: Res<Time>,
 ) {
     for (mut alien, transform) in aliens.iter_mut() {
-        alien.shoot(&mut commands, &asset_server, transform, &time)
+        alien.shoot(&mut commands, &asset_server, &audio, transform, &time)
     }
 }
 

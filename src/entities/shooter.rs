@@ -8,6 +8,7 @@ pub trait Shooter {
         &mut self,
         commands: &mut Commands,
         asset_server: &Res<AssetServer>,
+        audio: &Res<Audio>,
         transform: &Transform,
         time: &Res<Time>,
     );
@@ -30,6 +31,7 @@ pub fn _can_shoot(last_shot_ms: &mut i128, shooting_rate: i128, time_ms: i128) -
 pub fn _shoot(
     commands: &mut Commands,
     asset_server: &Res<AssetServer>,
+    audio: &Res<Audio>,
     transform: &Transform,
     can_shoot: bool,
     front_shoot_space: f32,
@@ -44,7 +46,7 @@ pub fn _shoot(
         transform.translation.y + front_shoot_space,
     );
 
-    Bullet::spawn_bullet(commands, asset_server, x, y, shooter);
+    Bullet::spawn_bullet(commands, asset_server, audio, x, y, shooter);
 }
 
 #[derive(Debug, Copy, Clone)]

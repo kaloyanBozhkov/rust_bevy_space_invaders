@@ -1,4 +1,4 @@
-use crate::constants::{ALIEN_FRONT_SHOOT_SPACE, SCREEN_W};
+use crate::constants::{Sounds, ALIEN_FRONT_SHOOT_SPACE, SCREEN_W};
 use bevy::prelude::*;
 
 use rand::{thread_rng, Rng};
@@ -11,12 +11,25 @@ pub struct Alien {
     pub shooting_rate: i128,
     pub shooting_speed: f32,
     pub movement_speed: f32,
+    pub death_sound: &'static str,
+}
+
+impl Default for Alien {
+    fn default() -> Self {
+        let mut rng = thread_rng();
+
+        Alien {
+            last_shot_ms: 0,
+            shooting_rate: rng.gen_range(2000.0..=8000.0) as i128,
+            shooting_speed: 30.0,
+            movement_speed: 50.0,
+            death_sound: Sounds::ALIEN_DEATH,
+        }
+    }
 }
 
 impl Alien {
     pub fn spawn_alien(commands: &mut Commands, asset_server: &Res<AssetServer>, x: f32, y: f32) {
-        let mut rng = thread_rng();
-
         commands
             .spawn(SpriteBundle {
                 texture: asset_server.load("alien_invader.png"),
@@ -24,10 +37,7 @@ impl Alien {
                 ..default()
             })
             .insert(Alien {
-                last_shot_ms: 0,
-                shooting_rate: rng.gen_range(2000.0..=8000.0) as i128,
-                shooting_speed: 30.0,
-                movement_speed: 50.0,
+                ..Default::default()
             });
     }
 
@@ -48,6 +58,7 @@ impl Shooter for Alien {
         &mut self,
         commands: &mut Commands,
         asset_server: &Res<AssetServer>,
+        audio: &Res<Audio>,
         transform: &Transform,
         time: &Res<Time>,
     ) {
@@ -56,6 +67,7 @@ impl Shooter for Alien {
         _shoot(
             commands,
             asset_server,
+            audio,
             transform,
             can_shoot,
             ALIEN_FRONT_SHOOT_SPACE,

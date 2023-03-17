@@ -11,10 +11,12 @@ pub fn move_bullets(
     mut commands: Commands,
     mut bullets: Query<(&Bullet, Entity, &mut Transform), With<Bullet>>,
     mut targets: Query<
-        (Entity, &mut Transform),
+        (Entity, &mut Transform, (Option<&Player>, Option<&Alien>)),
         (Or<(With<Alien>, With<Player>)>, Without<Bullet>),
     >,
     mut texts: Query<(&mut Text, &UIText), With<UIText>>,
+    asset_server: Res<AssetServer>,
+    audio: Res<Audio>,
     time: Res<Time>,
 ) {
     let bullets_arr = bullets.iter_mut();
@@ -37,18 +39,36 @@ pub fn move_bullets(
             commands.entity(b_entity).despawn();
         }
 
-        for (a, transform_target) in targets.iter_mut() {
+        for (t_entity, transform_target, target) in targets.iter_mut() {
             // check intersection
             let overlap = check_overlap(&transform_bullet, &transform_target, 22.0);
 
             if overlap {
-                commands.entity(a).despawn();
+                commands.entity(t_entity).despawn();
                 commands.entity(b_entity).despawn();
 
                 let (mut score, _) = texts
                     .iter_mut()
                     .find(|(_, text)| text.id == "score_count".to_string())
                     .unwrap();
+
+                let (t1, t2) = target;
+
+                let death_sound = match (t1, t2) {
+                    (Some(t1), _) => t1.death_sound,
+                    (_, Some(t2)) => t2.death_sound,
+                    _ => "",
+                };
+
+                let sound = asset_server.load(format!("sounds/{}", death_sound));
+                audio.play_with_settings(
+                    sound,
+                    PlaybackSettings {
+                        repeat: false,
+                        volume: 0.4,
+                        speed: 1.0,
+                    },
+                );
 
                 let score_n = score.sections[0].value.parse::<i32>().unwrap();
                 score.sections[0].value = (score_n + 1).to_string();

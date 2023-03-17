@@ -23,6 +23,7 @@ pub fn move_player(
 pub fn player_shoot(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    audio: Res<Audio>,
     key: Res<Input<KeyCode>>,
     mut player: Query<(&mut Player, &Transform), With<Player>>,
     time: Res<Time>,
@@ -34,6 +35,6 @@ pub fn player_shoot(
             return;
         }
 
-        player.shoot(&mut commands, &asset_server, transform, &time);
+        player.shoot(&mut commands, &asset_server, &audio, transform, &time);
     }
 }
