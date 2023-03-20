@@ -16,7 +16,7 @@ pub fn move_player(
             &time,
             Direction::determine(left, right),
             player.movement_speed,
-        )
+        );
     }
 }
 

@@ -16,7 +16,15 @@ pub fn aliens_shoot(
 }
 
 pub fn aliens_move(mut aliens: Query<(&Alien, &mut Transform), With<Alien>>, time: Res<Time>) {
+    let mut dir = Direction::Left;
+
     for (alien, mut transform) in aliens.iter_mut() {
-        x_move_subject(&mut transform, &time, Direction::Left, alien.movement_speed)
+        let reached_end = x_move_subject(&mut transform, &time, dir, alien.movement_speed);
+
+        dir = match (reached_end, dir) {
+            (true, Direction::Left) => Direction::Right,
+            (true, Direction::Right) => Direction::Left,
+            _ => dir,
+        }
     }
 }

@@ -1,8 +1,11 @@
+use std::ops::Neg;
+
 use crate::constants::SCREEN_H;
 
 use super::constants::SCREEN_W;
 use bevy::prelude::*;
 
+#[derive(Clone, Copy)]
 pub enum Direction {
     Left,
     Right,
@@ -21,20 +24,32 @@ impl Direction {
     }
 }
 
-pub fn x_move_subject(mut transform: &mut Transform, time: &Res<Time>, dir: Direction, speed: f32) {
+pub fn x_move_subject(
+    mut transform: &mut Transform,
+    time: &Res<Time>,
+    dir: Direction,
+    speed: f32,
+) -> bool {
     let amount = match dir {
         Direction::Left => -1.0,
         Direction::Right => 1.0,
         _ => 0.0,
     };
+    let mut reached_end = false;
 
     transform.translation.x += speed * amount * time.delta_seconds();
 
-    if transform.translation.x > SCREEN_W - 80.0 {
-        transform.translation.x = SCREEN_W - 80.0;
-    } else if transform.translation.x < -320.0 {
-        transform.translation.x = -320.0;
+    let edge = SCREEN_W - 80.;
+
+    if transform.translation.x > edge {
+        transform.translation.x = edge;
+        reached_end = true;
+    } else if transform.translation.x < edge.neg() {
+        transform.translation.x = edge.neg();
+        reached_end = true;
     }
+
+    return reached_end;
 }
 
 pub fn y_move_subject(

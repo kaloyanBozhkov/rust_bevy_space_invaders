@@ -1,6 +1,7 @@
 use bevy::{prelude::*, window::WindowResized};
 pub mod constants;
 mod entities;
+mod events;
 mod movement;
 mod systems;
 mod ui;
@@ -12,10 +13,20 @@ use systems::{
     bullet::move_bullets,
     player::{move_player, player_shoot},
 };
+
+use events::{
+    score::{score_manager, ScoreEvent},
+    sound::{sound_manager, SoundEvent},
+};
+
 use ui::score::UIText;
 
 fn main() {
     App::new()
+        .add_event::<ScoreEvent>()
+        .add_system(score_manager)
+        .add_event::<SoundEvent>()
+        .add_system(sound_manager)
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(move_player)

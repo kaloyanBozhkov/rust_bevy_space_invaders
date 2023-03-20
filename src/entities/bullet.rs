@@ -28,7 +28,7 @@ impl Bullet {
             .spawn(SpriteBundle {
                 texture: asset_server.load("shot.png"),
                 transform: Transform::from_xyz(x, y, 0.0)
-                    .with_scale(Vec3::new(0.8, 0.8, 1.0))
+                    .with_scale(Vec3::new(0.6, 0.6, 1.0))
                     .with_rotation(Quat::from_rotation_x(bullet_rotation.to_radians())),
                 ..default()
             })

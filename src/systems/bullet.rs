@@ -1,8 +1,11 @@
 use crate::{
     constants::SCREEN_H,
     entities::{alien::Alien, bullet::Bullet, player::Player, shooter::BulletShooter},
+    events::{
+        score::{ScoreEvent, ScoreOperation},
+        sound::SoundEvent,
+    },
     movement::{check_overlap, y_move_subject, Direction},
-    ui::score::UIText,
 };
 
 use bevy::prelude::*;
@@ -14,9 +17,8 @@ pub fn move_bullets(
         (Entity, &mut Transform, (Option<&Player>, Option<&Alien>)),
         (Or<(With<Alien>, With<Player>)>, Without<Bullet>),
     >,
-    mut texts: Query<(&mut Text, &UIText), With<UIText>>,
-    asset_server: Res<AssetServer>,
-    audio: Res<Audio>,
+    mut ev_score: EventWriter<ScoreEvent>,
+    mut ev_sound: EventWriter<SoundEvent>,
     time: Res<Time>,
 ) {
     let bullets_arr = bullets.iter_mut();
@@ -47,31 +49,22 @@ pub fn move_bullets(
                 commands.entity(t_entity).despawn();
                 commands.entity(b_entity).despawn();
 
-                let (mut score, _) = texts
-                    .iter_mut()
-                    .find(|(_, text)| text.id == "score_count".to_string())
-                    .unwrap();
-
                 let (t1, t2) = target;
 
-                let death_sound = match (t1, t2) {
-                    (Some(t1), _) => t1.death_sound,
-                    (_, Some(t2)) => t2.death_sound,
-                    _ => "",
+                let (death_sound, op) = match (t1, t2) {
+                    (Some(t1), _) => (t1.death_sound, ScoreOperation::RESET),
+                    (_, Some(t2)) => (t2.death_sound, ScoreOperation::INC),
+
+                    // below should never run, but keep in case more targets are added
+                    _ => ("", ScoreOperation::RESET),
                 };
 
-                let sound = asset_server.load(format!("sounds/{}", death_sound));
-                audio.play_with_settings(
-                    sound,
-                    PlaybackSettings {
-                        repeat: false,
-                        volume: 0.4,
-                        speed: 1.0,
-                    },
-                );
+                ev_sound.send(SoundEvent {
+                    sound_file_name: death_sound.to_string(),
+                    ..Default::default()
+                });
 
-                let score_n = score.sections[0].value.parse::<i32>().unwrap();
-                score.sections[0].value = (score_n + 1).to_string();
+                ev_score.send(ScoreEvent { op })
             }
         }
 

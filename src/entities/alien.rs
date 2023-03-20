@@ -21,7 +21,7 @@ impl Default for Alien {
         Alien {
             last_shot_ms: 0,
             shooting_rate: rng.gen_range(2000.0..=8000.0) as i128,
-            shooting_speed: 30.0,
+            shooting_speed: 40.0,
             movement_speed: 50.0,
             death_sound: Sounds::ALIEN_DEATH,
         }
@@ -33,7 +33,7 @@ impl Alien {
         commands
             .spawn(SpriteBundle {
                 texture: asset_server.load("alien_invader.png"),
-                transform: Transform::from_xyz(x, y, 0.0),
+                transform: Transform::from_xyz(x, y, 0.0).with_scale(Vec3::new(0.6, 0.6, 1.0)),
                 ..default()
             })
             .insert(Alien {

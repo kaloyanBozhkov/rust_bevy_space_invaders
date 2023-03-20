@@ -29,7 +29,7 @@ impl Player {
         commands
             .spawn(SpriteBundle {
                 texture: asset_server.load("space_ship.png"),
-                transform: Transform::from_xyz(x, y, 0.0),
+                transform: Transform::from_xyz(x, y, 0.0).with_scale(Vec3::new(0.8, 0.8, 1.0)),
                 ..default()
             })
             .insert(Player {
