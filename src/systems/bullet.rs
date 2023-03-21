@@ -54,9 +54,7 @@ pub fn move_bullets(
                 let (death_sound, op) = match (t1, t2) {
                     (Some(t1), _) => (t1.death_sound, ScoreOperation::RESET),
                     (_, Some(t2)) => (t2.death_sound, ScoreOperation::INC),
-
-                    // below should never run, but keep in case more targets are added
-                    _ => ("", ScoreOperation::RESET),
+                    _ => unimplemented!(),
                 };
 
                 ev_sound.send(SoundEvent {
