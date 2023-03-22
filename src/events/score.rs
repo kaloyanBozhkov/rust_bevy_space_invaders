@@ -1,7 +1,7 @@
 use crate::ui::ui_text::UIText;
 use bevy::prelude::*;
 
-use super::main_menu::MainMenuEvent;
+use super::{clear_scene::ClearSceneEvent, main_menu::MainMenuEvent};
 
 #[derive(PartialEq)]
 pub enum ScoreOperation {
@@ -17,6 +17,7 @@ pub fn score_manager(
     mut ev_score: EventReader<ScoreEvent>,
     mut texts: Query<(&mut Text, &UIText), With<UIText>>,
     mut ev_main_menu: EventWriter<MainMenuEvent>,
+    mut ev_clear_scene: EventWriter<ClearSceneEvent>,
 ) {
     for ev in ev_score.iter() {
         let (mut score, _) = texts
@@ -32,9 +33,8 @@ pub fn score_manager(
         score.sections[0].value = val.to_string();
 
         if ev.op == ScoreOperation::RESET {
-            ev_main_menu.send(MainMenuEvent {
-                with_clear_screen: true,
-            })
+            ev_clear_scene.send(ClearSceneEvent);
+            ev_main_menu.send(MainMenuEvent);
         }
     }
 }

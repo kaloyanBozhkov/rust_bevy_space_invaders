@@ -2,16 +2,11 @@ use bevy::prelude::*;
 
 use crate::ui::button::UIButton;
 
-use super::clear_scene::ClearSceneEvent;
-
 #[derive(Clone)]
-pub struct MainMenuEvent {
-    pub with_clear_screen: bool,
-}
+pub struct MainMenuEvent;
 
 pub fn main_menu_manager(
-    mut ev: EventReader<MainMenuEvent>,
-    mut ev_clear: EventWriter<ClearSceneEvent>,
+    ev: EventReader<MainMenuEvent>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
@@ -19,9 +14,7 @@ pub fn main_menu_manager(
         return;
     }
 
-    if ev.iter().last().unwrap().with_clear_screen == true {
-        ev_clear.send(ClearSceneEvent);
-    }
+    ev.clear();
 
     UIButton::create_many(
         &mut commands,

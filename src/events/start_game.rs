@@ -18,6 +18,9 @@ pub fn start_game_manager(
         return;
     }
 
+    // ensure no duplicate send
+    ev.clear();
+
     Player::spawn(&mut commands, &asset_server, 0.0, (SCREEN_H / -2.0) + 20.0);
     Alien::spawn_fleet(&mut commands, &asset_server, 10);
     UIText::score(&mut commands, &asset_server, 0);

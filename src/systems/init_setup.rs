@@ -10,7 +10,5 @@ pub fn init_setup(mut commands: Commands, mut ev: EventWriter<MainMenuEvent>) {
         .spawn(Camera2dBundle::default())
         .insert(PrimaryCamera);
 
-    ev.send(MainMenuEvent {
-        with_clear_screen: false,
-    });
+    ev.send(MainMenuEvent);
 }
