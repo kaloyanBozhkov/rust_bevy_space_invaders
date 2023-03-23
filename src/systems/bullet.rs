@@ -6,6 +6,7 @@ use crate::{
         sound::SoundEvent,
     },
     movement::{check_overlap, y_move_subject, Direction},
+    resources::state::{GameStep, State},
 };
 
 use bevy::prelude::*;
@@ -20,7 +21,12 @@ pub fn move_bullets(
     mut ev_score: EventWriter<ScoreEvent>,
     mut ev_sound: EventWriter<SoundEvent>,
     time: Res<Time>,
+    state: Res<State>,
 ) {
+    if state.step != GameStep::GameStarted {
+        return;
+    }
+
     let bullets_arr = bullets.iter_mut();
 
     if bullets_arr.len() == 0 {

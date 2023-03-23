@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     events::{clear_scene::ClearSceneEvent, start_game::StartGameEvent},
+    resources::state::{GameStep, State},
     ui::button::UIButton,
 };
 
@@ -11,7 +12,12 @@ pub fn button_system(
     mut interaction_query: Query<(&mut UIButton, &Interaction), With<UIButton>>,
     mut ev_start_game: EventWriter<StartGameEvent>,
     mut ev_clear_scene: EventWriter<ClearSceneEvent>,
+    state: Res<State>,
 ) {
+    if state.step != GameStep::MainMenu {
+        return;
+    }
+
     for (mut btn, interaction) in interaction_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {

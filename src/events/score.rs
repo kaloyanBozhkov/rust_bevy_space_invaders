@@ -1,4 +1,7 @@
-use crate::ui::ui_text::UIText;
+use crate::{
+    resources::state::{GameStep, State},
+    ui::ui_text::UIText,
+};
 use bevy::prelude::*;
 
 use super::{clear_scene::ClearSceneEvent, main_menu::MainMenuEvent};
@@ -18,12 +21,18 @@ pub fn score_manager(
     mut texts: Query<(&mut Text, &UIText), With<UIText>>,
     mut ev_main_menu: EventWriter<MainMenuEvent>,
     mut ev_clear_scene: EventWriter<ClearSceneEvent>,
+    state: Res<State>,
 ) {
+    if state.step != GameStep::GameStarted {
+        return;
+    }
+
     for ev in ev_score.iter() {
         let (mut score, _) = texts
             .iter_mut()
             .find(|(_, text)| text.id == "score_count".to_string())
             .unwrap();
+
         let score_n = score.sections[0].value.parse::<i32>().unwrap();
         let val = match ev.op {
             ScoreOperation::INC => score_n + 1,

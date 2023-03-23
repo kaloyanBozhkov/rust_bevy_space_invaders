@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use super::{alien::Alien, bullet::Bullet, player::Player};
 
 pub trait Shooter {
-    fn can_shoot(&mut self, time_ms: i128) -> bool;
+    fn can_shoot(&mut self, time_ms: u128) -> bool;
     fn shoot(
         &mut self,
         commands: &mut Commands,
@@ -14,10 +14,10 @@ pub trait Shooter {
     );
 }
 
-pub fn _can_shoot(last_shot_ms: &mut i128, shooting_rate: i128, time_ms: i128) -> bool {
+pub fn _can_shoot(last_shot_ms: &mut u128, shooting_rate: u128, time_ms: u128) -> bool {
     let mut can_shoot = true;
 
-    if ((*last_shot_ms) - time_ms).abs() < shooting_rate {
+    if (time_ms - (*last_shot_ms)) < shooting_rate {
         can_shoot = false;
     }
 

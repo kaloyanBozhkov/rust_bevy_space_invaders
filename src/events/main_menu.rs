@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::ui::button::UIButton;
+use crate::{
+    resources::state::{GameStep, State},
+    ui::button::UIButton,
+};
 
 #[derive(Clone)]
 pub struct MainMenuEvent;
@@ -9,12 +12,15 @@ pub fn main_menu_manager(
     ev: EventReader<MainMenuEvent>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    mut state: ResMut<State>,
 ) {
     if ev.len() == 0 {
         return;
     }
 
     ev.clear();
+
+    state.step = GameStep::MainMenu;
 
     UIButton::create_many(
         &mut commands,

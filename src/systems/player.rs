@@ -1,4 +1,7 @@
-use crate::entities::{player::Player, shooter::Shooter};
+use crate::{
+    entities::{player::Player, shooter::Shooter},
+    resources::state::{GameStep, State},
+};
 
 use super::super::movement::{x_move_subject, Direction};
 use bevy::prelude::*;
@@ -7,7 +10,12 @@ pub fn move_player(
     key: Res<Input<KeyCode>>,
     mut players: Query<(&Player, &mut Transform), With<Player>>,
     time: Res<Time>,
+    state: Res<State>,
 ) {
+    if state.step != GameStep::GameStarted {
+        return;
+    }
+
     for (player, mut transform) in players.iter_mut() {
         let left = key.any_pressed([KeyCode::A, KeyCode::Left]);
         let right = key.any_pressed([KeyCode::D, KeyCode::Right]);

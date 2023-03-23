@@ -3,10 +3,12 @@ pub mod constants;
 mod entities;
 mod events;
 mod movement;
+mod resources;
 mod systems;
 mod ui;
 
 use constants::{SCREEN_H, SCREEN_W};
+use resources::resources_setup::resources_setup;
 use systems::{
     init_setup::{init_setup, PrimaryCamera},
     systems_setup::systems_setup,
@@ -20,6 +22,7 @@ fn main() {
     app.add_plugins(DefaultPlugins)
         .add_system(adjust_screen_resize);
 
+    resources_setup(&mut app);
     events_setup(&mut app);
     systems_setup(&mut app);
 

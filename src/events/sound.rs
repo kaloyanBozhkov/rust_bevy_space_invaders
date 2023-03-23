@@ -27,11 +27,11 @@ impl Default for SoundEvent {
 }
 
 pub fn sound_manager(
-    mut ev_score: EventReader<SoundEvent>,
+    mut ev_sound: EventReader<SoundEvent>,
     asset_server: Res<AssetServer>,
     audio: Res<Audio>,
 ) {
-    for ev in ev_score.iter() {
+    for ev in ev_sound.iter() {
         if ev.sound_file_name != "" {
             let sound = asset_server.load(format!("sounds/{}", ev.sound_file_name));
             audio.play_with_settings(sound, ev.playback_settings.clone());

@@ -5,7 +5,7 @@ use crate::constants::SCREEN_H;
 use super::constants::SCREEN_W;
 use bevy::prelude::*;
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub enum Direction {
     Left,
     Right,
@@ -23,6 +23,21 @@ impl Direction {
         }
     }
 }
+pub fn check_reached_end(transform: &mut Transform) -> bool {
+    let mut reached_end = false;
+
+    let edge = SCREEN_W - 80.;
+
+    if transform.translation.x >= edge {
+        transform.translation.x = edge;
+        reached_end = true;
+    } else if transform.translation.x <= edge.neg() {
+        transform.translation.x = edge.neg();
+        reached_end = true;
+    }
+
+    reached_end
+}
 
 pub fn x_move_subject(
     mut transform: &mut Transform,
@@ -35,21 +50,10 @@ pub fn x_move_subject(
         Direction::Right => 1.0,
         _ => 0.0,
     };
-    let mut reached_end = false;
 
     transform.translation.x += speed * amount * time.delta_seconds();
 
-    let edge = SCREEN_W - 80.;
-
-    if transform.translation.x > edge {
-        transform.translation.x = edge;
-        reached_end = true;
-    } else if transform.translation.x < edge.neg() {
-        transform.translation.x = edge.neg();
-        reached_end = true;
-    }
-
-    return reached_end;
+    return check_reached_end(transform);
 }
 
 pub fn y_move_subject(

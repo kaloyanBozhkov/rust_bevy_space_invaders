@@ -5,8 +5,8 @@ use super::shooter::{BulletShooter, Shooter, _can_shoot, _shoot};
 
 #[derive(Debug, Component, Copy, Clone)]
 pub struct Player {
-    pub last_shot_ms: i128,
-    pub shooting_rate: i128,
+    pub last_shot_ms: u128,
+    pub shooting_rate: u128,
     pub shooting_speed: f32,
     pub movement_speed: f32,
     pub death_sound: &'static str,
@@ -39,7 +39,7 @@ impl Player {
 }
 
 impl Shooter for Player {
-    fn can_shoot(&mut self, time_ms: i128) -> bool {
+    fn can_shoot(&mut self, time_ms: u128) -> bool {
         _can_shoot(&mut self.last_shot_ms, self.shooting_rate, time_ms)
     }
 
@@ -51,7 +51,7 @@ impl Shooter for Player {
         transform: &Transform,
         time: &Res<Time>,
     ) {
-        let can_shoot = self.can_shoot(time.elapsed().as_millis() as i128);
+        let can_shoot = self.can_shoot(time.elapsed().as_millis());
 
         _shoot(
             commands,
